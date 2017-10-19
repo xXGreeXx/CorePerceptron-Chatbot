@@ -6,7 +6,7 @@ namespace CorePerceptron_Chatbot
     public class NeuralNetwork
     {
         //define global variables
-        private List<List<Perceptron>> perceptrons = new List<List<Perceptron>>();
+        public List<List<Perceptron>> perceptrons { get; private set; }  = new List<List<Perceptron>>();
 
         //constructor
         public NeuralNetwork()
@@ -24,7 +24,7 @@ namespace CorePerceptron_Chatbot
             perceptrons.Add(new List<Perceptron>() { new Perceptron(16, 1), new Perceptron(16, 1), new Perceptron(16, 1), new Perceptron(16, 1), new Perceptron(16, 8), new Perceptron(16, 1), new Perceptron(16, 1), new Perceptron(16, 1) });
 
             //output layer(word to return)
-            perceptrons.Add(new List<Perceptron>() { new Perceptron(0, 0) });
+            perceptrons.Add(new List<Perceptron>() { new Perceptron(8, 0) });
         }
 
         //output data
@@ -76,6 +76,10 @@ namespace CorePerceptron_Chatbot
                 r += word + " ";
             }
 
+            //train perceptrons
+            trainPerceptrons(r, data);
+
+            //return text
             return r;
         }
 
@@ -95,20 +99,21 @@ namespace CorePerceptron_Chatbot
                 foreach (Perceptron p in layer)
                 {
                     inputsBuffer[perceptronIndex] = p.output(inputs);
-
+                    
                     perceptronIndex++;
                 }
 
                 //feed forward
                 inputs = inputsBuffer;
             }
-
-            value = inputs[0];
+            
+            value = (float)Math.Round(inputs[0], 2);
+            Console.WriteLine(value);
             return ChatbotCore.NumberToWord(value);
         }
 
         //train perceptrons
-        private void trainPerceptrons()
+        private void trainPerceptrons(String user1Words, String user2Words)
         {
 
         }

@@ -39,17 +39,36 @@ namespace CorePerceptron_Chatbot
         private void SaveOnExit(object sender, EventArgs e)
         {
             //save neural network weights
+            File.Delete(neuralNetworkWeightsSavePath);
+            StreamWriter weightWriter = new StreamWriter(File.OpenWrite(neuralNetworkWeightsSavePath));
+
+            for (int index = 1; index < ChatbotCore.brain.perceptrons.Count; index++)
+            {
+                List<Perceptron> layer = ChatbotCore.brain.perceptrons[index];
+
+                int perceptronIndex = 1;
+                foreach (Perceptron p in layer)
+                {
+                    weightWriter.WriteLine("<BEGIN-NODE> : layer " + index + " : node " + perceptronIndex);
+
+                    foreach (float weight in p.weights)
+                    {
+                        weightWriter.WriteLine(weight);
+                    }
+
+                    perceptronIndex++;
+                }
+            }
+            weightWriter.Close();
 
             //save word database
             File.Delete(wordDatabaseSavePath);
-
             StreamWriter writer = new StreamWriter(File.OpenWrite(wordDatabaseSavePath));
 
             foreach (var data in ChatbotCore.loadedDataBase)
             {
                 writer.WriteLine(data.Key + ":" + data.Value);
             }
-
             writer.Close();
         }
 

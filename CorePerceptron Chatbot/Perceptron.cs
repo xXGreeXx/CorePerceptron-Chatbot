@@ -5,7 +5,7 @@ namespace CorePerceptron_Chatbot
     public class Perceptron
     {
         //define global variables
-        float[] weights;
+        public float[] weights { get; private set; }
         int numberOfOutputs;
         float bias = 1;
 

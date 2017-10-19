@@ -8,16 +8,13 @@ namespace CorePerceptron_Chatbot
     {
         //define global variables
         public static NeuralNetwork brain { get; private set; } = new NeuralNetwork();
-        public static float learningRate { get; } = 0.005F;
+        public static float learningRate { get; } = 0.1F;
         public static Dictionary<String, float> loadedDataBase { get; set; } = new Dictionary<String, float>();
         private static float dataBaseWordOffset { get; } = 0.01F;
 
         //constructor
         public ChatbotCore()
         {
-            //load brain weights
-            //TODO\\
-
             //load word data base
             if (File.Exists(Game.wordDatabaseSavePath))
             {
