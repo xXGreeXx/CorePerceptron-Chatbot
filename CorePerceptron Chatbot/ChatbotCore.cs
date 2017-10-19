@@ -35,6 +35,7 @@ namespace CorePerceptron_Chatbot
                         if (c.ToString().Equals(":"))
                         {
                             value = line.Substring(index + 1, line.Length - (index + 1));
+                            break;
                         }
                         else
                         {

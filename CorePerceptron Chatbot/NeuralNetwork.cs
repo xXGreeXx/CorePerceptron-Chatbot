@@ -104,7 +104,6 @@ namespace CorePerceptron_Chatbot
             }
 
             value = inputs[0];
-
             return ChatbotCore.NumberToWord(value);
         }
 
