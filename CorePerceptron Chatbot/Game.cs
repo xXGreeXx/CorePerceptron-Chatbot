@@ -15,6 +15,9 @@ namespace CorePerceptron_Chatbot
         public static String neuralNetworkWeightsSavePath = "NeuralNetworkSave.txt";
         public static Random randomGeneration { get; } = new Random();
 
+        float scroll = 0;
+        Font f = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
+
         //initialize
         public Game()
         {
@@ -62,14 +65,13 @@ namespace CorePerceptron_Chatbot
             Graphics g = e.Graphics;
             int width = canvas.Width;
             int height = canvas.Height;
-            Font f = new Font(FontFamily.GenericSansSerif, 15, FontStyle.Bold);
 
             float yOffs = 10;
             foreach (Tuple<String, int> msg in chatLog)
             {
                 String starter = msg.Item2 == 0 ? "You: " : "Bot: ";
 
-                g.DrawString(starter + msg.Item1, f, Brushes.Black, 10, yOffs);
+                g.DrawString(starter + msg.Item1, f, Brushes.Black, 10, yOffs - scroll);
 
                 yOffs += g.MeasureString(starter + msg.Item1, f).Height + 10;
             }
@@ -80,19 +82,29 @@ namespace CorePerceptron_Chatbot
         {
             if (e.KeyCode.Equals(Keys.Enter))
             {
-                chatLog.Add(Tuple.Create(textBox.Text, 0));
+                //add text
+                String text = textBox.Text;
                 textBox.Text = "";
                 textBox.Refresh();
+
+                chatLog.Add(Tuple.Create(text, 0));
 
                 chatLog.Add(Tuple.Create("...", 1));
                 canvas.Refresh();
                 System.Threading.Thread.Sleep(500);
 
                 chatLog.RemoveAt(chatLog.Count - 1);
-                chatLog.Add(Tuple.Create(chatbot.SendData(textBox.Text), 1));
+                chatLog.Add(Tuple.Create(chatbot.SendData(text), 1));
 
                 e.Handled = true;
                 e.SuppressKeyPress = true;
+
+                //scroll chat
+                Graphics g = canvas.CreateGraphics();
+                if (chatLog.Count * g.MeasureString("test", f).Height * 1.5F + 10 > canvas.Height)
+                {
+                    scroll += g.MeasureString("test", f).Height * 2 + 10;
+                }
             }
         }
     }

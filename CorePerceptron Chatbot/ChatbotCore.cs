@@ -19,33 +19,36 @@ namespace CorePerceptron_Chatbot
             //TODO\\
 
             //load word data base
-            StreamReader reader = new StreamReader(File.OpenRead(Game.wordDatabaseSavePath));
-
-            String line;
-            while ((line = reader.ReadLine()) != null)
+            if (File.Exists(Game.wordDatabaseSavePath))
             {
-                String word = "";
-                String value = "";
+                StreamReader reader = new StreamReader(File.OpenRead(Game.wordDatabaseSavePath));
 
-                int index = 0;
-                foreach (char c in line)
+                String line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    if (c.ToString().Equals(":"))
+                    String word = "";
+                    String value = "";
+
+                    int index = 0;
+                    foreach (char c in line)
                     {
-                        value = line.Substring(index + 1, line.Length - (index + 1));
-                    }
-                    else
-                    {
-                        word += c.ToString();
+                        if (c.ToString().Equals(":"))
+                        {
+                            value = line.Substring(index + 1, line.Length - (index + 1));
+                        }
+                        else
+                        {
+                            word += c.ToString();
+                        }
+
+                        index++;
                     }
 
-                    index++;
+                    loadedDataBase.Add(word, float.Parse(value));
                 }
 
-                loadedDataBase.Add(word, float.Parse(value));
+                reader.Close();
             }
-
-            reader.Close();
         }
 
         //send data
@@ -57,7 +60,7 @@ namespace CorePerceptron_Chatbot
         //convert word to number
         public static float WordToNumber(String word)
         {
-            float number = 0;
+            float number = -1;
 
             foreach (var value in loadedDataBase)
             {
@@ -91,7 +94,7 @@ namespace CorePerceptron_Chatbot
         //add word to data base
         public static void AddWordToDataBase(String word)
         {
-            float valueForDatabase = loadedDataBase.Count * dataBaseWordOffset;
+            float valueForDatabase = loadedDataBase.Count * dataBaseWordOffset + dataBaseWordOffset;
 
             loadedDataBase.Add(word, valueForDatabase);
         }

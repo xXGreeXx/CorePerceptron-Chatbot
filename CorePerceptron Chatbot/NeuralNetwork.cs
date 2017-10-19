@@ -31,7 +31,7 @@ namespace CorePerceptron_Chatbot
         public String OutputDataFromNetwork(String data)
         {
             List<String> returnMessage = new List<String>();
-
+            
             //parse words
             String wordToAddToList = "";
             List<String> wordList = new List<String>();
@@ -49,6 +49,7 @@ namespace CorePerceptron_Chatbot
                     wordToAddToList += c;
                 }
             }
+            wordList.Add(wordToAddToList);
 
             //add words that to database that aren't in it
             foreach (String word in wordList)
@@ -70,6 +71,10 @@ namespace CorePerceptron_Chatbot
 
             //return text
             String r = "";
+            foreach (String word in returnMessage)
+            {
+                r += word + " ";
+            }
 
             return r;
         }
@@ -79,7 +84,26 @@ namespace CorePerceptron_Chatbot
         {
             float value = 0.0F;
 
+            //iterate over neural net
+            float[] inputs = new float[] { word, lastWordSet };
+            for (int index = 1; index < perceptrons.Count; index++)
+            {
+                List<Perceptron> layer = perceptrons[index];
+                float[] inputsBuffer = new float[layer.Count];
 
+                int perceptronIndex = 0;
+                foreach (Perceptron p in layer)
+                {
+                    inputsBuffer[perceptronIndex] = p.output(inputs);
+
+                    perceptronIndex++;
+                }
+
+                //feed forward
+                inputs = inputsBuffer;
+            }
+
+            value = inputs[0];
 
             return ChatbotCore.NumberToWord(value);
         }
