@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Game));
             this.canvas = new System.Windows.Forms.PictureBox();
             this.textBox = new System.Windows.Forms.TextBox();
             this.updateTimer = new System.Windows.Forms.Timer(this.components);
@@ -66,6 +67,7 @@
             this.ClientSize = new System.Drawing.Size(743, 662);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.canvas);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Game";
             this.Text = "CorePerceptron Chatbot";
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();

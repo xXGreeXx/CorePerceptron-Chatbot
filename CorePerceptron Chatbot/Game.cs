@@ -8,6 +8,11 @@ namespace CorePerceptron_Chatbot
     public partial class Game : Form
     {
         List<Tuple<String, int>> chatLog = new List<Tuple<String, int>>();
+        ChatbotCore chatbot = new ChatbotCore();
+
+        public static String wordDatabaseSavePath = "WordDataBase.txt";
+        public static String neuralNetworkWeightsSavePath = "NeuralNetworkSave.txt";
+        public static Random randomGeneration { get; } = new Random();
 
         //initialize
         public Game()
@@ -19,8 +24,17 @@ namespace CorePerceptron_Chatbot
             this.MaximizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
 
+            //set application exit handle
+            Application.ApplicationExit += SaveOnExit;
+
             //start game loop
             updateTimer.Start();
+        }
+
+        //save data before exit
+        private void SaveOnExit(object sender, EventArgs e)
+        {
+            
         }
 
         //refresh timer
@@ -54,8 +68,15 @@ namespace CorePerceptron_Chatbot
             if (e.KeyCode.Equals(Keys.Enter))
             {
                 chatLog.Add(Tuple.Create(textBox.Text, 0));
-                textBox.Text = "";
 
+                chatLog.Add(Tuple.Create("...", 1));
+                canvas.Refresh();
+                System.Threading.Thread.Sleep(500);
+
+                chatLog.RemoveAt(chatLog.Count - 1);
+                chatLog.Add(Tuple.Create(chatbot.SendData(textBox.Text), 1));
+
+                textBox.Text = "";
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
