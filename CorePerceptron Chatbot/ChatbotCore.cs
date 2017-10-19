@@ -9,7 +9,7 @@ namespace CorePerceptron_Chatbot
         //define global variables
         private NeuralNetwork brain = new NeuralNetwork();
         public static float learningRate { get; } = 0.01F;
-        private List<float> loadedDataBase { get; set; } = new List<float>();
+        public static List<Tuple<String, float>> loadedDataBase { get; set; } = new List<Tuple<String, float>>();
 
         //constructor
         public ChatbotCore()
@@ -43,6 +43,14 @@ namespace CorePerceptron_Chatbot
         public static void AddWordToDataBase(String word)
         {
             
+        }
+
+        //check if database contains word
+        public static float CheckIfDatabaseContainsWord(String word)
+        {
+            float returnValue = -100;
+
+            return returnValue;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace CorePerceptron_Chatbot
 {
@@ -34,7 +35,15 @@ namespace CorePerceptron_Chatbot
         //save data before exit
         private void SaveOnExit(object sender, EventArgs e)
         {
-            
+            //save neural network weights
+
+            //save word database
+            StreamWriter writer = new StreamWriter(File.OpenWrite(wordDatabaseSavePath));
+
+            foreach (Tuple<String, float> data in ChatbotCore.loadedDataBase)
+            {
+                writer.WriteLine(data.Item1 + ":" + data.Item2);
+            }
         }
 
         //refresh timer
