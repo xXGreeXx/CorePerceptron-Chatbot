@@ -30,10 +30,64 @@ namespace CorePerceptron_Chatbot
         //output data
         public String OutputDataFromNetwork(String data)
         {
-            String returnMessage = "";
+            List<String> returnMessage = new List<String>();
+
+            //parse words
+            String wordToAddToList = "";
+            List<String> wordList = new List<String>();
+            for (int index = 0; index < data.Length; index++)
+            {
+                String c = data.Substring(index, 1);
+
+                if (c.Equals(" "))
+                {
+                    wordList.Add(wordToAddToList);
+                    wordToAddToList = "";
+                }
+                else
+                {
+                    wordToAddToList += c;
+                }
+            }
+
+            //add words that to database that aren't in it
+            foreach (String word in wordList)
+            {
+                if (!ChatbotCore.loadedDataBase.ContainsKey(word))
+                {
+                    ChatbotCore.AddWordToDataBase(word);
+                }
+
+                if (returnMessage.Count > 0)
+                {
+                    returnMessage.Add(wordToOutput(ChatbotCore.WordToNumber(word), ChatbotCore.WordToNumber(returnMessage[returnMessage.Count - 1])));
+                }
+                else
+                {
+                    returnMessage.Add(wordToOutput(ChatbotCore.WordToNumber(word), -1));
+                }
+            }
+
+            //return text
+            String r = "";
+
+            return r;
+        }
+
+        //communicate with perceptrons
+        private String wordToOutput(float word, float lastWordSet)
+        {
+            float value = 0.0F;
 
 
-            return returnMessage;
+
+            return ChatbotCore.NumberToWord(value);
+        }
+
+        //train perceptrons
+        private void trainPerceptrons()
+        {
+
         }
     }
 }

@@ -38,12 +38,16 @@ namespace CorePerceptron_Chatbot
             //save neural network weights
 
             //save word database
+            File.Delete(wordDatabaseSavePath);
+
             StreamWriter writer = new StreamWriter(File.OpenWrite(wordDatabaseSavePath));
 
-            foreach (Tuple<String, float> data in ChatbotCore.loadedDataBase)
+            foreach (var data in ChatbotCore.loadedDataBase)
             {
-                writer.WriteLine(data.Item1 + ":" + data.Item2);
+                writer.WriteLine(data.Key + ":" + data.Value);
             }
+
+            writer.Close();
         }
 
         //refresh timer
@@ -77,6 +81,8 @@ namespace CorePerceptron_Chatbot
             if (e.KeyCode.Equals(Keys.Enter))
             {
                 chatLog.Add(Tuple.Create(textBox.Text, 0));
+                textBox.Text = "";
+                textBox.Refresh();
 
                 chatLog.Add(Tuple.Create("...", 1));
                 canvas.Refresh();
@@ -85,7 +91,6 @@ namespace CorePerceptron_Chatbot
                 chatLog.RemoveAt(chatLog.Count - 1);
                 chatLog.Add(Tuple.Create(chatbot.SendData(textBox.Text), 1));
 
-                textBox.Text = "";
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
