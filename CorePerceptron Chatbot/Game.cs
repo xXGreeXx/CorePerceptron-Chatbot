@@ -35,6 +35,9 @@ namespace CorePerceptron_Chatbot
             updateTimer.Start();
 
             chatbot.brain.trainPerceptrons("Hello how are you?", "Good how are you?");
+            chatbot.brain.trainPerceptrons("Test", "What?");
+            chatbot.brain.trainPerceptrons("Who are you?", "I don't know");
+            chatbot.brain.trainPerceptrons("What are you?", "I don't know");
         }
 
         //save data before exit

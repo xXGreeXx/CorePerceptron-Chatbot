@@ -104,6 +104,8 @@ namespace CorePerceptron_Chatbot
                 inputs = inputsBuffer;
             }
             
+            value = (float)Math.Round(inputs[0] / 100, 2);
+            value = Map(value, 0, 5, 0.00F, ChatbotCore.loadedDataBase.Count * ChatbotCore.dataBaseWordOffset);
             value = (float)Math.Round(inputs[0], 2);
             Console.WriteLine(value);
             return ChatbotCore.NumberToWord(value);
@@ -191,7 +193,7 @@ namespace CorePerceptron_Chatbot
                     }
 
                     //train
-                    if (layerIndex == perceptrons.Count - 1)
+                    if (error.Count == 0)
                     {
                         errorBuffer[neuronIndex] = neuron.train(inputs, targetWord, false);
                     }
@@ -211,12 +213,17 @@ namespace CorePerceptron_Chatbot
                 }
 
                 error.Add(errorBuffer);
-
                 if (error.Count > 1)
                 {
-                    errorOfOuterLayer = error[error.Count - 1];
+                    errorOfOuterLayer = error[error.Count - 2];
                 }
             }
+        }
+
+        //map
+        public float Map(float value, float fromSource, float toSource, float fromTarget, float toTarget)
+        {
+            return (value - fromSource) / (toSource - fromSource) * (toTarget - fromTarget) + fromTarget;
         }
     }
 }

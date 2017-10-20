@@ -8,9 +8,9 @@ namespace CorePerceptron_Chatbot
     {
         //define global variables
         public NeuralNetwork brain { get; private set; } = new NeuralNetwork();
-        public static float learningRate { get; } = 0.1F;
+        public static float learningRate { get; } = 0.01F;
         public static Dictionary<String, float> loadedDataBase { get; set; } = new Dictionary<String, float>();
-        private static float dataBaseWordOffset { get; } = 0.01F;
+        public static float dataBaseWordOffset { get; } = 0.01F;
 
         //constructor
         public ChatbotCore()
