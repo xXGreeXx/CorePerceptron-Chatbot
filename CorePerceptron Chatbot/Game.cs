@@ -42,9 +42,9 @@ namespace CorePerceptron_Chatbot
             File.Delete(neuralNetworkWeightsSavePath);
             StreamWriter weightWriter = new StreamWriter(File.OpenWrite(neuralNetworkWeightsSavePath));
 
-            for (int index = 1; index < ChatbotCore.brain.perceptrons.Count; index++)
+            for (int index = 1; index < chatbot.brain.perceptrons.Count; index++)
             {
-                List<Perceptron> layer = ChatbotCore.brain.perceptrons[index];
+                List<Perceptron> layer = chatbot.brain.perceptrons[index];
 
                 int perceptronIndex = 1;
                 foreach (Perceptron p in layer)
@@ -97,7 +97,7 @@ namespace CorePerceptron_Chatbot
         }
 
         //key down handler
-        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        private void textBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode.Equals(Keys.Enter))
             {
@@ -123,6 +123,24 @@ namespace CorePerceptron_Chatbot
                 if (chatLog.Count * g.MeasureString("test", f).Height * 1.5F + 10 > canvas.Height)
                 {
                     scroll += g.MeasureString("test", f).Height * 2 + 10;
+                }
+
+                //train chatbot
+                int amountOfUserPosts = 0;
+                foreach (var elemenent in chatLog)
+                {
+                    if (elemenent.Item2.Equals(0))
+                    {
+                        amountOfUserPosts++;
+                    }
+                }
+
+                if (amountOfUserPosts % 2 == 0)
+                {
+                    String chatbotWord = chatLog[chatLog.Count - 3].Item1;
+                    String userReply = chatLog[chatLog.Count - 2].Item1;
+
+                    chatbot.brain.trainPerceptrons(chatbotWord, userReply);
                 }
             }
         }

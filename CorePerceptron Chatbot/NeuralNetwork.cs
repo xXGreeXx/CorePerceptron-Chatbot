@@ -61,11 +61,11 @@ namespace CorePerceptron_Chatbot
 
                 if (returnMessage.Count > 0)
                 {
-                    returnMessage.Add(forwardPropagate(ChatbotCore.WordToNumber(word), ChatbotCore.WordToNumber(returnMessage[returnMessage.Count - 1])));
+                    returnMessage.Add(forwardPropagateData(ChatbotCore.WordToNumber(word), ChatbotCore.WordToNumber(returnMessage[returnMessage.Count - 1])));
                 }
                 else
                 {
-                    returnMessage.Add(forwardPropagate(ChatbotCore.WordToNumber(word), -1));
+                    returnMessage.Add(forwardPropagateData(ChatbotCore.WordToNumber(word), -1));
                 }
             }
 
@@ -76,15 +76,12 @@ namespace CorePerceptron_Chatbot
                 r += word + " ";
             }
 
-            //train perceptrons
-            trainPerceptrons(r, data);
-
             //return text
             return r;
         }
 
         //communicate with perceptrons
-        private String forwardPropagate(float word, float lastWordSet)
+        private String forwardPropagateData(float word, float lastWordSet)
         {
             float value = 0.0F;
 
@@ -108,11 +105,12 @@ namespace CorePerceptron_Chatbot
             }
             
             value = (float)Math.Round(inputs[0], 2);
+            Console.WriteLine(value);
             return ChatbotCore.NumberToWord(value);
         }
 
         //train perceptrons
-        private void trainPerceptrons(String user1Words, String user2Words)
+        public void trainPerceptrons(String user1Words, String user2Words)
         {
             //iterate over words
             List<String> inputWords = new List<String>();
@@ -164,11 +162,13 @@ namespace CorePerceptron_Chatbot
         {
             //iterate over layers
             float[] error = new float[2];
+            float[] errorOfOuterLayer = new float[2];
 
             for (int layerIndex = perceptrons.Count - 1; layerIndex > 1; layerIndex--)
             {
                 List<Perceptron> layer = perceptrons[layerIndex];
                 float[] errorBuffer = new float[layer.Count];
+                float[] errorOfOuterLayerBuffer = new float[layer.Count];
 
                 //iterate over neurons
                 for (int neuronIndex = 0; neuronIndex < layer.Count; neuronIndex++)
@@ -177,8 +177,6 @@ namespace CorePerceptron_Chatbot
 
                     //fetch inputs with forward propagation
                     float[] inputs = new float[2];
-
-                    //iterate over layers
                     for (int indexOfPropagateLayer = 0; indexOfPropagateLayer < layerIndex; indexOfPropagateLayer++)
                     {
                         List<Perceptron> layerToPropagate = perceptrons[indexOfPropagateLayer];
@@ -196,12 +194,18 @@ namespace CorePerceptron_Chatbot
                     //train
                     if (layerIndex == perceptrons.Count - 1)
                     {
-                        error[neuronIndex] = neuron.train(inputs, targetWord, false);
+                        errorBuffer[neuronIndex] = neuron.train(inputs, targetWord, false);
+                        errorOfOuterLayer[neuronIndex] = errorBuffer[neuronIndex];
                     }
                     else
                     {
                         //sum error 
                         float errorToPassToNetwork = 0;
+                        for (int i = 0; i < errorOfOuterLayer.Length; i++)
+                        {
+                            Perceptron layerOverCurrent = perceptrons[layerIndex + 1][i];
+                            errorToPassToNetwork += errorOfOuterLayer[i] * layerOverCurrent.weights[neuronIndex];
+                        }
 
                         //pass to network
                         error[neuronIndex] = neuron.train(inputs, errorToPassToNetwork, true);
@@ -209,6 +213,7 @@ namespace CorePerceptron_Chatbot
                 }
 
                 error = errorBuffer;
+                errorOfOuterLayer = errorOfOuterLayerBuffer;
             }
         }
     }
