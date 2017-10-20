@@ -33,6 +33,8 @@ namespace CorePerceptron_Chatbot
 
             //start game loop
             updateTimer.Start();
+
+            chatbot.brain.trainPerceptrons("Hello how are you?", "Good how are you?");
         }
 
         //save data before exit

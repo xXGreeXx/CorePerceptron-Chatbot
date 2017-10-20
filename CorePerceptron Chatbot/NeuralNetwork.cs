@@ -161,14 +161,13 @@ namespace CorePerceptron_Chatbot
         private void backPropagateData(float inputWord, float targetWord)
         {
             //iterate over layers
-            float[] error = new float[2];
-            float[] errorOfOuterLayer = new float[2];
+            List<float[]> error = new List<float[]>();
+            float[] errorOfOuterLayer = new float[1];
 
             for (int layerIndex = perceptrons.Count - 1; layerIndex > 1; layerIndex--)
             {
                 List<Perceptron> layer = perceptrons[layerIndex];
                 float[] errorBuffer = new float[layer.Count];
-                float[] errorOfOuterLayerBuffer = new float[layer.Count];
 
                 //iterate over neurons
                 for (int neuronIndex = 0; neuronIndex < layer.Count; neuronIndex++)
@@ -195,7 +194,6 @@ namespace CorePerceptron_Chatbot
                     if (layerIndex == perceptrons.Count - 1)
                     {
                         errorBuffer[neuronIndex] = neuron.train(inputs, targetWord, false);
-                        errorOfOuterLayer[neuronIndex] = errorBuffer[neuronIndex];
                     }
                     else
                     {
@@ -208,12 +206,16 @@ namespace CorePerceptron_Chatbot
                         }
 
                         //pass to network
-                        error[neuronIndex] = neuron.train(inputs, errorToPassToNetwork, true);
+                        errorBuffer[neuronIndex] = neuron.train(inputs, errorToPassToNetwork, true);
                     }
                 }
 
-                error = errorBuffer;
-                errorOfOuterLayer = errorOfOuterLayerBuffer;
+                error.Add(errorBuffer);
+
+                if (error.Count > 1)
+                {
+                    errorOfOuterLayer = error[error.Count - 1];
+                }
             }
         }
     }

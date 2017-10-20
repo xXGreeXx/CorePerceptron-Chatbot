@@ -20,11 +20,27 @@ namespace CorePerceptron_Chatbot
             {
                 StreamReader reader = new StreamReader(File.OpenRead(Game.neuralNetworkWeightsSavePath));
 
-                String line;
-                while ((line = reader.ReadLine()) != null)
+                String line = reader.ReadLine();
+                int neuronIndex = 0;
+                int layerIndex = 1;
+                while (layerIndex < brain.perceptrons.Count)
                 {
+                    int weightIndex = 0;
+                    while ((line = reader.ReadLine()) != null && line.Substring(0, 1) != "<")
+                    {
+                        brain.perceptrons[layerIndex][neuronIndex].weights[weightIndex] = float.Parse(line);
+                        weightIndex++;
+                    }
 
+                    neuronIndex++;
+                    if (neuronIndex >= brain.perceptrons[layerIndex].Count)
+                    {
+                        neuronIndex = 0;
+                        layerIndex++;
+                    }
                 }
+
+                reader.Close();
             }
 
             //load word data base
